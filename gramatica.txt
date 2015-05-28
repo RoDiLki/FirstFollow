@@ -1,0 +1,6 @@
+S -> aBDh
+B -> cC	
+C -> bC $
+D -> Ef
+E -> g $
+F -> f $	

@@ -117,8 +117,6 @@ void inicializaFF(vector<string> ntdf){
 	for(int i =0; i < ntdf.size(); i++){
 		TPFF  ax;
 		ax.nTerminal = ntdf[i];
-		ax.first.push_back("{");
-		ax.follow.push_back("{");
 		conjuntoFF.push_back(ax);
 	}
 	return;
@@ -275,11 +273,19 @@ void chamaFirst(){
 //imprime o conjunto FIRST e FOLLOW
 void imprimeConjuntoFF(){
 	for(int i=0; i<conjuntoFF.size();i++){
-		cout <<"FIRST( "<< conjuntoFF[i].nTerminal << ") == ";
-		for(int j=0;j<conjuntoFF[i].first.size();j++) cout << conjuntoFF[i].first[j] <<" ";
+		cout <<"FIRST( "<< conjuntoFF[i].nTerminal << ") == { ";
+		for(int j=0;j<conjuntoFF[i].first.size();j++){
+			cout << conjuntoFF[i].first[j];
+			if(j != conjuntoFF[i].first.size()-1)cout << ", " ;
+			else cout << " ";
+		}
 		cout << "}\n";
-		cout <<"FOLLOW( "<< conjuntoFF[i].nTerminal << ") == ";
-		for(int j=0;j<conjuntoFF[i].follow.size();j++) cout << conjuntoFF[i].follow[j] <<" ";
+		cout <<"FOLLOW( "<< conjuntoFF[i].nTerminal << ") == { ";
+		for(int j=0;j<conjuntoFF[i].follow.size();j++){
+			cout << conjuntoFF[i].follow[j];
+			if(j != conjuntoFF[i].follow.size()-1)cout << ", " ;
+			else cout << " ";
+		}
 		cout << "}\n\n";
 	}
 }

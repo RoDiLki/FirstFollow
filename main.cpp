@@ -52,11 +52,9 @@ void processaEntrada(){
 				
 				while(j < entrada[i].size() ){
 					if(entrada[i][j] == "|" )break;
-					cout << entrada[i][j];
 					rule.producao.push_back(entrada[i][j]);
 					j++;
 				}
-				cout<<"\n";
 				gramatica.push_back(rule);
 			}
 		}
@@ -76,6 +74,7 @@ void imprimeEntrada(){
 
 //imprima a entrada processada
 void imprimeGramatica(){
+	cout << "\n\t Gramatica estendida\n\n\t  ";
 	for(int i=0; i< gramatica.size(); i++){
 		cout << gramatica[i].nTerminal <<" -> ";
 		int j=0;
@@ -83,9 +82,29 @@ void imprimeGramatica(){
 			cout << gramatica[i].producao[j];
 			j++;
 		}
-		cout << "\n";
+		cout << "\n\t  ";
 	}
 	cout << "\n";
+}
+
+//imprime o conjunto FIRST e FOLLOW
+void imprimeConjuntoFF(){
+	for(int i=0; i<conjuntoFF.size();i++){
+		cout <<"FIRST( "<< conjuntoFF[i].nTerminal << " )  == { ";
+		for(int j=0;j<conjuntoFF[i].first.size();j++){
+			cout << conjuntoFF[i].first[j];
+			if(j != conjuntoFF[i].first.size()-1)cout << ", " ;
+			else cout << " ";
+		}
+		cout << "}\n";
+		cout <<"FOLLOW( "<< conjuntoFF[i].nTerminal << " ) == { ";
+		for(int j=0;j<conjuntoFF[i].follow.size();j++){
+			cout << conjuntoFF[i].follow[j];
+			if(j != conjuntoFF[i].follow.size()-1)cout << ", " ;
+			else cout << " ";
+		}
+		cout << "}\n\n";
+	}
 }
 
 //verifica se não é letra Maiúscula que seriam terminais
@@ -172,6 +191,22 @@ int copiaFIRST(int i, string fr){
 	}
 }
 
+//copia o first do nao terminal sequinte para ser o follow do atual
+int copiaFOLLOW(int i, string fr){
+	for(int j =0; j<conjuntoFF.size();j++){
+		if(conjuntoFF[j].nTerminal == fr){
+			int tem =0;
+			for(int x=0; x<conjuntoFF[j].first.size(); x++){
+				guardaFollow(i,conjuntoFF[j].follow[x]);
+				if(conjuntoFF[j].follow[x] == "$"){
+					tem =1;
+				}
+			}
+			return tem;
+		}
+	}
+}
+
 //encontra os componentes do conjunto FIRST
 void encontraFirst(string nter){
 	vector <int> jaFR;
@@ -187,7 +222,7 @@ void encontraFirst(string nter){
 				guardaFirst(i,prod);
 				jaFR.push_back(i);
 			}else if(onlyLower(prod) == 0 && nTerminalPeloNome(prod) == -1){// misto de terminais e não terminais  abA  AaB
-				if(onlyLower(gramatica[i].producao[0]) == 1){ // terminais seguidos de terminais abB , aB
+				if(onlyLower(gramatica[i].producao[0]) == 1){ // terminais somente
 					guardaFirst(i,gramatica[i].producao[0]); 
 					jaFR.push_back(i);
 				}
@@ -230,16 +265,13 @@ void encontraFirst(string nter){
 //encontra os componentes do conjunto FOLLOW
 void encontraFollow(string nter){
 	
-	int tm = nter.size();
-	int an = 0;
-	int dp = tm-1;
-	
-	for(int i=gramatica.size()-1; i >=0 ; i--){
+	for(int i=gramatica.size()-1; i >= 0 ; i--){
 		
 	}
 }
 //Cria uma lista dos não terminais com apenas uma cópia de cada e chama a função para encontrar o FIRST
-void chamaFirst(){
+
+void chamaFirstFollow(){
 	vector< string > nTerminaisDiferentes;
 	for(int i=0; i< gramatica.size(); i++){
 		if(nTerminaisDiferentes.size() == 0){
@@ -265,29 +297,6 @@ void chamaFirst(){
 		encontraFirst(nTerminaisDiferentes[j]);
 		encontraFollow(nTerminaisDiferentes[j]);
 	}
-	
-	//repetir o for acima basicamente para o FOLLOW tbem
-	
-}
-
-//imprime o conjunto FIRST e FOLLOW
-void imprimeConjuntoFF(){
-	for(int i=0; i<conjuntoFF.size();i++){
-		cout <<"FIRST( "<< conjuntoFF[i].nTerminal << ") == { ";
-		for(int j=0;j<conjuntoFF[i].first.size();j++){
-			cout << conjuntoFF[i].first[j];
-			if(j != conjuntoFF[i].first.size()-1)cout << ", " ;
-			else cout << " ";
-		}
-		cout << "}\n";
-		cout <<"FOLLOW( "<< conjuntoFF[i].nTerminal << ") == { ";
-		for(int j=0;j<conjuntoFF[i].follow.size();j++){
-			cout << conjuntoFF[i].follow[j];
-			if(j != conjuntoFF[i].follow.size()-1)cout << ", " ;
-			else cout << " ";
-		}
-		cout << "}\n\n";
-	}
 }
 
 int main()
@@ -296,7 +305,7 @@ int main()
 	imprimeEntrada();
 	processaEntrada();
 	imprimeGramatica();
-	chamaFirst();
+	chamaFirstFollow();
 	
 	imprimeConjuntoFF();
 	
